@@ -1,7 +1,7 @@
-import { Event, IEvent, Reducer, ICommitFunction } from '@nxcd/tardis'
+import { IEvent, Reducer, ICommitFunction } from '@nxcd/tardis'
 import { IEventEntity } from '../interfaces/IEventEntity'
 
-export class EventEntity<TEntity> implements IEventEntity<TEntity> {
+export class EventEntity<TEntity> implements IEventEntity {
   persistedEvents: IEvent[] = []
   pendingEvents: IEvent[] = []
   id: any = null

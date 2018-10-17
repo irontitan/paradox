@@ -12,7 +12,7 @@ interface Constructor<Entity> {
   new (events?: IEvent[]): Entity
 }
 
-export class MongodbEventRepository<TEntity extends IEventEntity<TEntity>> implements IEventRepository<TEntity> {
+export class MongodbEventRepository<TEntity extends IEventEntity> implements IEventRepository<TEntity> {
   private _collection: Collection
   private _Entity: Constructor<TEntity>
 

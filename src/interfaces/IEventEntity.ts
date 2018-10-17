@@ -1,6 +1,6 @@
 import { IEvent } from '@nxcd/tardis'
 
-export interface IEventEntity<Entity> {
+export interface IEventEntity {
   id: any
   state: any
   persistedEvents: IEvent[]
