@@ -1,32 +1,32 @@
 import { IEvent, Reducer, ICommitFunction } from '@nxcd/tardis'
 import { IEventEntity } from '../interfaces/IEventEntity'
 
-export class EventEntity<TEntity> implements IEventEntity {
+export abstract class EventEntity<TEntity> implements IEventEntity {
   persistedEvents: IEvent[] = []
   pendingEvents: IEvent[] = []
   id: any = null
 
-  protected _reducer: Reducer<TEntity>
+  protected reducer: Reducer<TEntity>
 
-  constructor (knownEvents: { [eventName: string]: ICommitFunction<TEntity, any> }) {
-    this._reducer = new Reducer<TEntity>(knownEvents)
+  constructor(knownEvents: { [ eventName: string ]: ICommitFunction<TEntity, any> }) {
+    this.reducer = new Reducer<TEntity>(knownEvents)
   }
 
-  get state (): any {
+  get state(): any {
     throw new Error('Method not implemented.')
   }
 
-  setPersistedEvents (events: IEvent[]) {
+  setPersistedEvents(events: IEvent[]) {
     this.persistedEvents = events
     return this
   }
 
-  pushNewEvents (events: IEvent[]) {
+  pushNewEvents(events: IEvent[]) {
     this.pendingEvents = this.pendingEvents.concat(events)
     return this
   }
 
-  confirmEvents () {
+  confirmEvents() {
     this.persistedEvents = this.persistedEvents.concat(this.pendingEvents)
     this.pendingEvents = []
     return this
