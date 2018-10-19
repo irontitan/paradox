@@ -1,12 +1,22 @@
 image: node:10
 
-before_script:
-  - npm i -g pnpm
-  - pnpm install
+stages:
+  - prepare
+  - build
+  - deploy
 
-cache:
-  paths:
-    - node_modules
+
+install_dependencies:
+  stage: prepare
+  script:
+    - npm i -g pnpm
+    - pnpm install
+  cache:
+    paths:
+      - node_modules
+  artifacts:
+    paths:
+      - /node_modules
 
 build:
   image: node:10
@@ -15,6 +25,8 @@ build:
     - npm run build
   except:
     - tags
+  dependencies:
+    - install_dependencies
 
 build:release:
   image: node:10
@@ -27,7 +39,9 @@ build:release:
   artifacts:
     paths:
       - /dist
-    expires_in: 10 minutes
+    expire_in: 10 minutes
+  dependencies:
+    - install_dependencies
 
 publish:
   image: node:10
@@ -39,4 +53,5 @@ publish:
     - tags
     - triggers
   dependencies:
+    - install_dependencies
     - build:release
