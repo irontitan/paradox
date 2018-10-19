@@ -38,7 +38,7 @@ build:release:
     - triggers
   artifacts:
     paths:
-      - /dist
+      - dist
     expire_in: 10 minutes
   dependencies:
     - install_dependencies
