@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prepublish": "npm run clean:build",
+    "prepublish": "npm run build:clean",
     "clean": "rm -rf dist",
     "build": "tsc",
     "build:clean": "npm run clean && npm run build"
