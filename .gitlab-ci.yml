@@ -16,7 +16,7 @@ install_dependencies:
       - node_modules
   artifacts:
     paths:
-      - /node_modules
+      - node_modules
 
 build:
   image: node:10
