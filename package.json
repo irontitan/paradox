@@ -2,7 +2,7 @@
   "name": "@nxcd/event-sourcing-toolkit",
   "version": "1.0.4",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "prepublish": "npm run build:clean",
     "clean": "rm -rf dist",
