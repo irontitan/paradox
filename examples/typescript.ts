@@ -33,6 +33,13 @@ export class Person extends EventEntity<Person> {
     })
   }
 
+  static create (email: string, user: string): Person {
+    const id = 'myid'
+    const person = new Person()
+    person.pushNewEvents([ new PersonWasCreated({ id, email }, user) ])
+    return person
+  }
+
   get state() {
     return this._reducer.reduce(new Person, [
       ...this.persistedEvents,
@@ -54,5 +61,6 @@ class PersonRepository extends MongodbEventRepository<Person> {
 (async function () {
   const connection = (await MongoClient.connect('mongodb://salkdjkjdhfdkjsfhjkdsfhs')).db('crowd')
   const personRepository = new PersonRepository(connection)
-
+  const person = Person.create('john.doe@company.com', 'johndoe')
+  await personRepository.save(person)
 })()

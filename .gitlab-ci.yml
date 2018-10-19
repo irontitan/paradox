@@ -13,8 +13,6 @@ build:
   stage: build
   script:
     - npm run build
-  tags:
-    - node
 
 publish:
   image: node:10
