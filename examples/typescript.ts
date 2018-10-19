@@ -1,17 +1,17 @@
-import {Event} from '@nxcd/tardis'
-import {EventEntity} from '../src/classes/EventEntity'
-import { MongodbEventRepository } from '../src/classes/MongodbEventRepository'
+import { Event } from '@nxcd/tardis'
+import { EventEntity } from '../src/classes/EventEntity'
+import { MongodbEventRepository } from '../src/classes/repositories/MongodbEventRepository'
 
 class PersonWasCreated extends Event {
   static eventName: string = 'person-was-created'
   user: string
 
- constructor (data: {email: string}, user: string) {
-  super(PersonWasCreated.eventName, data)
-  this.user = user
- }
+  constructor(data: { email: string }, user: string) {
+    super(PersonWasCreated.eventName, data)
+    this.user = user
+  }
 
-  static commit (state: Person, event: PersonWasCreated) {
+  static commit(state: Person, event: PersonWasCreated) {
     state.email = event.data.email
     state.updatedAt = event.timestamp
     state.updatedBy = event.user
@@ -26,13 +26,13 @@ export class Person extends EventEntity<Person> {
   updatedBy: string | null = null
   static collection: string = 'people'
 
-  constructor () {
+  constructor() {
     super({
-      [PersonWasCreated.eventName]: PersonWasCreated.commit
+      [ PersonWasCreated.eventName ]: PersonWasCreated.commit
     })
   }
 
-  get state () {
+  get state() {
     return this._reducer.reduce(new Person, [
       ...this.persistedEvents,
       ...this.pendingEvents
@@ -45,8 +45,8 @@ export class Person extends EventEntity<Person> {
 import { Db, MongoClient } from 'mongodb'
 
 class PersonRepository extends MongodbEventRepository<Person> {
-  constructor (connection: Db) {
-    super (connection.collection(Person.collection), Person)
+  constructor(connection: Db) {
+    super(connection.collection(Person.collection), Person)
   }
 }
 

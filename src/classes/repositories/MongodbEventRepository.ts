@@ -1,7 +1,7 @@
 import { IEvent } from '@nxcd/tardis'
 import { Collection, ObjectId } from 'mongodb'
-import { IEventEntity } from '../interfaces/IEventEntity'
-import { IEventRepository } from '../interfaces/IEventRepository'
+import { IEventEntity } from '../../interfaces/IEventEntity'
+import { IEventRepository } from '../../interfaces/IEventRepository'
 
 interface IDatabaseDocument {
   state: any
@@ -9,19 +9,19 @@ interface IDatabaseDocument {
 }
 
 interface Constructor<Entity> {
-  new (events?: IEvent[]): Entity
+  new(events?: IEvent[]): Entity
 }
 
 export class MongodbEventRepository<TEntity extends IEventEntity> implements IEventRepository<TEntity> {
   private _collection: Collection
   private _Entity: Constructor<TEntity>
 
-  constructor (collection: Collection, Entity: Constructor<TEntity>) {
+  constructor(collection: Collection, Entity: Constructor<TEntity>) {
     this._collection = collection
     this._Entity = Entity
   }
 
-  private async _create (entity: TEntity): Promise<TEntity> {
+  private async _create(entity: TEntity): Promise<TEntity> {
     await this._collection.insertOne({
       _id: entity.id,
       events: entity.persistedEvents,
@@ -31,7 +31,7 @@ export class MongodbEventRepository<TEntity extends IEventEntity> implements IEv
     return entity.confirmEvents()
   }
 
-  async save (entity: TEntity): Promise<TEntity> {
+  async save(entity: TEntity): Promise<TEntity> {
     const { state, pendingEvents } = entity
     const document = await this.findById(entity.id)
 
@@ -47,7 +47,7 @@ export class MongodbEventRepository<TEntity extends IEventEntity> implements IEv
     return entity.confirmEvents()
   }
 
-  async findById (id: ObjectId): Promise<TEntity | null> {
+  async findById(id: ObjectId): Promise<TEntity | null> {
     const document: IDatabaseDocument = await this._collection.findOne(
       { _id: id },
       { projection: { state: 1, events: 1 } }
