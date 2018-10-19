@@ -6,12 +6,13 @@ class PersonWasCreated extends Event {
   static eventName: string = 'person-was-created'
   user: string
 
-  constructor(data: { email: string }, user: string) {
+  constructor(data: { id: string, email: string }, user: string) {
     super(PersonWasCreated.eventName, data)
     this.user = user
   }
 
   static commit(state: Person, event: PersonWasCreated) {
+    state.id = event.data.id
     state.email = event.data.email
     state.updatedAt = event.timestamp
     state.updatedBy = event.user
