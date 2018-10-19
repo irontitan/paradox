@@ -5,11 +5,11 @@ import { IEventRepository } from '../../interfaces/IEventRepository'
 
 interface IDatabaseDocument {
   state: any
-  events: IEvent[]
+  events: IEvent<any>[]
 }
 
 interface Constructor<Entity> {
-  new(events?: IEvent[]): Entity
+  new(events?: IEvent<any>[]): Entity
 }
 
 export abstract class MongodbEventRepository<TEntity extends IEventEntity> implements IEventRepository<TEntity> {
