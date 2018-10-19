@@ -1,0 +1,57 @@
+image: node:10
+
+stages:
+  - prepare
+  - build
+  - deploy
+
+
+install_dependencies:
+  stage: prepare
+  script:
+    - npm i -g pnpm
+    - pnpm install
+  cache:
+    paths:
+      - node_modules
+  artifacts:
+    paths:
+      - node_modules
+
+build:
+  image: node:10
+  stage: build
+  script:
+    - npm run build
+  except:
+    - tags
+  dependencies:
+    - install_dependencies
+
+build:release:
+  image: node:10
+  stage: build
+  script:
+    npm run build
+  only:
+    - tags
+    - triggers
+  artifacts:
+    paths:
+      - /dist
+    expire_in: 10 minutes
+  dependencies:
+    - install_dependencies
+
+publish:
+  image: node:10
+  stage: deploy
+  script:
+    - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
+    - npm publish --access=public
+  only:
+    - tags
+    - triggers
+  dependencies:
+    - install_dependencies
+    - build:release
