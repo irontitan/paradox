@@ -9,11 +9,15 @@ cache:
     - node_modules
 
 build:
+  image: node:10
   stage: build
   script:
     - npm run build
+  tags:
+    - node
 
 publish:
+  image: node:10
   stage: deploy
   script:
     - npm run build
