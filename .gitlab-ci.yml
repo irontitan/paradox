@@ -13,14 +13,30 @@ build:
   stage: build
   script:
     - npm run build
+  except:
+    - tags
+
+build:release:
+  image: node:10
+  stage: build
+  script:
+    npm run build
+  only:
+    - tags
+    - triggers
+  artifacts:
+    paths:
+      - /dist
+    expires_in: 10 minutes
 
 publish:
   image: node:10
   stage: deploy
   script:
-    - npm run build
     - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
     - npm publish --access=public
   only:
     - tags
     - triggers
+  dependencies:
+    - build:release
