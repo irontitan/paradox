@@ -16,12 +16,12 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
   private _collection: Collection
   private _Entity: Constructor<TEntity>
 
-  constructor(collection: Collection, Entity: Constructor<TEntity>) {
+  constructor (collection: Collection, Entity: Constructor<TEntity>) {
     this._collection = collection
     this._Entity = Entity
   }
 
-  private async _create(entity: TEntity): Promise<TEntity> {
+  private async _create (entity: TEntity): Promise<TEntity> {
     await this._collection.insertOne({
       _id: entity.id,
       events: entity.pendingEvents,
@@ -31,7 +31,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
     return entity.confirmEvents()
   }
 
-  async save(entity: TEntity): Promise<TEntity> {
+  async save (entity: TEntity): Promise<TEntity> {
     const { state, pendingEvents } = entity
     const document = await this.findById(entity.id)
 
@@ -47,7 +47,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
     return entity.confirmEvents()
   }
 
-  async findById(id: ObjectId): Promise<TEntity | null> {
+  async findById (id: ObjectId): Promise<TEntity | null> {
     const document: IDatabaseDocument = await this._collection.findOne(
       { _id: id },
       { projection: { state: 1, events: 1 } }

@@ -21,5 +21,5 @@ export interface IEventEntity {
    * Moves all pending events to the normal events array
    * @returns {Entity} The entity with the new state and with no pending events
    */
-  confirmEvents(): any
+  confirmEvents (): any
 }
