@@ -24,7 +24,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
   private async _create(entity: TEntity): Promise<TEntity> {
     await this._collection.insertOne({
       _id: entity.id,
-      events: entity.persistedEvents,
+      events: entity.pendingEvents,
       state: entity.state
     })
 
