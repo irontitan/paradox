@@ -18,7 +18,7 @@ export abstract class EventEntity<TEntity> implements IEventEntity {
   }
 
   private updateState () {
-    for (const propertyName of this.state) {
+    for (const propertyName of Object.keys(this.state)) {
       this[propertyName] = this.state[propertyName]
     }
   }
