@@ -2,6 +2,7 @@ import { IEvent, Reducer, ICommitFunction } from '@nxcd/tardis'
 import { IEventEntity } from '../interfaces/IEventEntity'
 
 export abstract class EventEntity<TEntity> implements IEventEntity {
+  [ key: string ]: any
   persistedEvents: IEvent<any>[] = []
   pendingEvents: IEvent<any>[] = []
   id: any = null
@@ -16,13 +17,21 @@ export abstract class EventEntity<TEntity> implements IEventEntity {
     throw new Error('Method not implemented.')
   }
 
+  private updateState () {
+    for (const propertyName of this.state) {
+      this[propertyName] = this.state[propertyName]
+    }
+  }
+
   setPersistedEvents(events: IEvent<any>[]) {
     this.persistedEvents = events
+    this.updateState()
     return this
   }
 
   pushNewEvents(events: IEvent<any>[]) {
     this.pendingEvents = this.pendingEvents.concat(events)
+    this.updateState()
     return this
   }
 
