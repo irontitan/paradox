@@ -37,8 +37,14 @@ Evento que será incluso na classe Person.
 ```ts
 import { Event } from '@nxcd/tardis'
 import { Person } from './classes/Person'
+import ObjectId from 'bson-objectid'
 
-class PersonWasCreated extends Event {
+interface IPersonCreationParams {
+  id?: ObjectId
+  email: string
+}
+
+class PersonWasCreated extends Event<IPersonCreationParams> {
   static readonly eventName: string = 'person-was-created'
   user: string
 
@@ -91,10 +97,15 @@ export class Person extends EventEntity<Person> {
   }
 
   get state() {
-    return this.reducer.reduce(new Person, [
+    const currentState = this.reducer.reduce(new Person, [
       ...this.persistedEvents,
       ...this.pendingEvents
     ])
+
+    return {
+      id: currentState.id,
+      email: currentState.email
+    }
   }
 }
 ```
