@@ -23,7 +23,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
 
   private async _create (entity: TEntity): Promise<TEntity> {
     await this._collection.insertOne({
-      _id: entity.id,
+      _id: new ObjectId(entity.id),
       events: entity.pendingEvents,
       state: entity.state
     })
@@ -42,7 +42,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
       $push: { events: { $each: pendingEvents } }
     }
 
-    await this._collection.updateOne({ _id: entity.id }, operations)
+    await this._collection.updateOne({ _id: new ObjectId(entity.id) }, operations)
 
     return entity.confirmEvents()
   }
