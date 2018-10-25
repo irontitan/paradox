@@ -13,7 +13,7 @@ interface Constructor<Entity> {
 }
 
 export abstract class MongodbEventRepository<TEntity extends IEventEntity> implements IEventRepository<TEntity> {
-  private _collection: Collection
+  protected _collection: Collection
   private _Entity: Constructor<TEntity>
 
   constructor (collection: Collection, Entity: Constructor<TEntity>) {
