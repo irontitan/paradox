@@ -47,7 +47,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
     return entity.confirmEvents()
   }
 
-  async findById (id: ObjectId): Promise<TEntity | null> {
+  async findById (id: string|ObjectId): Promise<TEntity | null> {
     if (!ObjectId.isValid(id)) return null
 
     const document: IDatabaseDocument = await this._collection.findOne(
