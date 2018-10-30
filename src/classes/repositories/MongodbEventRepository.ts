@@ -2,6 +2,7 @@ import { IEvent } from '@nxcd/tardis'
 import { Collection, ObjectId } from 'mongodb'
 import { IEventEntity } from '../../interfaces/IEventEntity'
 import { IEventRepository } from '../../interfaces/IEventRepository'
+import { IPaginatedQueryResult } from '../../interfaces/IPaginatedQueryResult'
 
 interface IDatabaseDocument {
   state: any
@@ -21,6 +22,10 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
     this._Entity = Entity
   }
 
+  /**
+   * Creates a new entity on the database
+   * @param {TEntity} entity Entity to be created
+   */
   private async _create (entity: TEntity): Promise<TEntity> {
     await this._collection.insertOne({
       _id: new ObjectId(entity.id),
@@ -31,6 +36,10 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
     return entity.confirmEvents()
   }
 
+  /**
+   * Creates or updates an entity in the database
+   * @param {TEntity} entity Entity to be saved (upserted) to the bank
+   */
   async save (entity: TEntity): Promise<TEntity> {
     const { state, pendingEvents } = entity
     const document = await this.findById(entity.id)
@@ -47,7 +56,61 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
     return entity.confirmEvents()
   }
 
-  async findById (id: string|ObjectId): Promise<TEntity | null> {
+  /**
+   * Performs a paginated query and returns the result
+   * @param {{[key: string]: any}}  query Query to be performed
+   * @param {number} page Page to be returned
+   * @param {number} size Number of results per page
+   * @returns {Promise} Set of results
+   */
+  protected async _runPaginatedQuery (query: { [key: string]: any }, page: number, size: number): Promise<IPaginatedQueryResult<{ events: IEvent<TEntity>[] }>> {
+    const skip = (Number(page) - 1) * Number(size)
+    const limit = Number(size)
+
+    const total = await this._collection.countDocuments(query)
+
+    if (total === 0) return { documents: [], count: 0, range: { from: 0, to: 0 }, total }
+
+    const documents = await this._collection.find(query, { skip, limit, projection: { events: 1 } }).toArray()
+
+    const count = documents.length
+    const range = { from: skip, to: skip + count }
+
+    return { documents, count, range, total }
+  }
+
+
+  /**
+   * Updates a series of entities on the database
+   * without knowing or caring if they exist or not
+   * This uses a transaction to ensure no leftovers in case of failure
+   * If mongodb version is inferior to 4.0, no transactions are used,
+   * and the operations become ACID
+   * @param {TEntity[]} entities Array of entities to be updated
+   */
+  async bulkUpdate (entities: IEventEntity[]): Promise<void> {
+    const operations = entities.filter((entity) => entity.pendingEvents.length > 0)
+      .map(productionOrder => {
+        return {
+          updateOne: {
+            filter: { _id: productionOrder.id },
+            update: {
+              $set: { state: productionOrder.state },
+              $push: { events: { $each: productionOrder.pendingEvents } }
+            }
+          }
+        }
+      })
+
+    await this._collection.bulkWrite(operations, { ordered: true })
+  }
+
+  /**
+   * Finds a document given its ID
+   * If the given Id is a string, it *will* be converted to an ObjectId
+   * @param {string|ObjectId} id Id of the desired document
+   */
+  async findById (id: string | ObjectId): Promise<TEntity | null> {
     if (!ObjectId.isValid(id)) return null
 
     const document: IDatabaseDocument = await this._collection.findOne(
