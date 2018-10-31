@@ -1,5 +1,5 @@
 import { IEvent } from '@nxcd/tardis'
-import { Collection, ObjectId } from 'mongodb'
+import { Collection, ObjectId, ClientSession } from 'mongodb'
 import { IEventEntity } from '../../interfaces/IEventEntity'
 import { IEventRepository } from '../../interfaces/IEventRepository'
 import { IPaginatedQueryResult } from '../../interfaces/IPaginatedQueryResult'
@@ -20,6 +20,18 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
   constructor (collection: Collection, Entity: Constructor<TEntity>) {
     this._collection = collection
     this._Entity = Entity
+  }
+
+  protected async _tryRunningWithSession (fn: Function, session: ClientSession) {
+    session.startTransaction()
+    try {
+      const result = await fn()
+      session.commitTransaction()
+      return result
+    } catch (err) {
+      session.abortTransaction()
+      throw err
+    }
   }
 
   /**
@@ -88,7 +100,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
    * and the operations become ACID
    * @param {TEntity[]} entities Array of entities to be updated
    */
-  async bulkUpdate (entities: IEventEntity[]): Promise<void> {
+  async bulkUpdate (entities: IEventEntity[], session?: ClientSession): Promise<void> {
     const operations = entities.filter((entity) => entity.pendingEvents.length > 0)
       .map(productionOrder => {
         return {
@@ -102,7 +114,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
         }
       })
 
-    await this._collection.bulkWrite(operations, { ordered: true })
+    await this._collection.bulkWrite(operations, { ordered: true, session })
   }
 
   /**
@@ -121,5 +133,11 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
     if (!document) return null
 
     return new this._Entity().setPersistedEvents(document.events)
+  }
+
+  withSession (session: ClientSession) {
+    return {
+      bulkUpdate: (entities: IEventEntity[]) => this._tryRunningWithSession(() => this.bulkUpdate(entities, session), session)
+    }
   }
 }

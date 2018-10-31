@@ -1,6 +1,6 @@
 {
   "name": "@nxcd/event-sourcing-toolkit",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "Rogério Munhoz <rogerio.j.munhoz@gmail.com>",
     "Lucas Santos <lhs.santoss@gmail.com>"
   ],
-  "license": "ISC",
+  "license": "GPL-3.0",
   "dependencies": {
     "@nxcd/tardis": "^2.0.1"
   },
