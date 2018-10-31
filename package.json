@@ -14,9 +14,10 @@
     "Rogério Munhoz <rogerio.j.munhoz@gmail.com>",
     "Lucas Santos <lhs.santoss@gmail.com>"
   ],
-  "license": "ISC",
+  "license": "GPL-3.0",
   "dependencies": {
-    "@nxcd/tardis": "^2.0.1"
+    "@nxcd/tardis": "^2.0.1",
+    "mongodb": "^3.1.8"
   },
   "devDependencies": {
     "@types/mongodb": "^3.1.12",
