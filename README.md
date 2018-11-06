@@ -274,7 +274,7 @@ class PersonRepository extends MongodbEventRepository<Person> {
   janeDoe.changeEmail({ newEmail: 'janedoe@doe.com' }, 'janedoe')
 
   const session = connection.startSession()
-  await personRepository..withSession(session).bulkUpdate([ johnDoe, janeDoe ]) // Atualiza ambas as entidades no banco utilizando bulkWrite usando uma transação
+  await personRepository.withSession(session).bulkUpdate([ johnDoe, janeDoe ]) // Atualiza ambas as entidades no banco utilizando bulkWrite usando uma transação
 })()
 ```
 
