@@ -20,6 +20,7 @@
   - [EventEntity](#evententity)
   - [Repositórios](#repositórios)
     - [MongodbEventRepository](#mongodbeventrepository)
+      - [Sessões](#sessões)
   - [Interfaces](#interfaces)
     - [IPaginatedQueryResult](#ipaginatedqueryresult)
 
@@ -171,7 +172,7 @@ class PersonRepository extends MongodbEventRepository<Person> {
       ? { 'state.name': filters.name }
       : { }
 
-    const { documents, count, range, total } = await this.runPaginatedQuery(query, page, size)
+    const { documents, count, range, total } = await this._runPaginatedQuery(query, page, size)
     const entities = documents.map(({ events }) => new Person().setPersistedEvents(events))
 
     return { entities, count, range, total }
@@ -183,14 +184,14 @@ class PersonRepository extends MongodbEventRepository<Person> {
   const personRepository = new PersonRepository(connection)
   const johnDoe = Person.create('johndoe@doe.com', 'jdoe')
   await personRepository.save(johnDoe) // Criará um novo evento na classe
-  const allJanes = await personRepository.search({ name: 'jane' }, 1, 10) // Retornará um objeto que sege [IPaginatedQueryResult](#ipaginatedqueryresult)
+  const allJanes = await personRepository.search({ name: 'jane' }, 1, 10) // Retornará um objeto que segue [IPaginatedQueryResult](#ipaginatedqueryresult)
 
   // Por algum motivo, podemos desejar atualizar mais de uma entidade ao mesmo tempo
   johnDoe.changeEmail({ newEmail: 'johndoe@company.com' }, 'jdoe')
   const [ janeDoe ] = allJanes
   janeDoe.changeEmail({ newEmail: 'janedoe@doe.com' }, 'janedoe')
 
-  await personRepository.bulkUpdate([ johnDoe, janeDoe ]) // Atualiza ambas as entidades no banco utilizando bulkWrite e, se disponível, uma transação
+  await personRepository.bulkUpdate([ johnDoe, janeDoe ]) // Atualiza ambas as entidades no banco utilizando bulkWrite
 })() // IIFE só para criar o escopo e utilizar async/await
 ```
 
@@ -232,8 +233,52 @@ Por padrão a classe já possui alguns métodos base:
 
 - `save (entity: TEntity)`: Que irá serializar e salvar a entidade passada (que deve ser do mesmo tipo passado quando estendido em `MongodbEventRepository<TEntity>`) no banco de dados. Primeiramente o método tentará encontrar a entidade pelo seu ID, se a classe não existir então uma nova linha será criada no modelo `{_id, events, state}` onde `events` começará como um array vazio e a cada `save` será incrementado e concatenado com o array de `pendingEvents` (logo depois dessa operação o método `confirmEvents` da entidade será chamado, zerando o array de `pendingEvents`), `state` será o último estado reduzido da entidade, que será obtido chamando o getter `state` que falamos na seção anterior.
 - `findById (id: ObjectId)`: Irá buscar na base de dados um registro com o `id` informado em `ObjectId` que será criado pelo evento quando a classe for instanciada através do método `create`
-- `bulkUpdate (entities: IEventEntity[])`: Salva os eventos de várias instâncias de uma entidade de uma vez só. Caso a versão do mongodb seja maior ou igual a 4.0, utiliza uma transação para garantir a consistência dos dados
-- `runPaginatedQuery (query: { [key: string]: any }, page: number, size: number)`: Executa uma query e aplica paginação, retornando um objeto que obedece a interface [IPaginatedQueryResult](#ipaginatedqueryresult)
+- `bulkUpdate (entities: IEventEntity[])`: Salva os eventos de várias instâncias de uma entidade de uma vez só
+- `withSession (session: ClientSession)`: Inicia uma sessão de usuário para criação de transações (somente MongoDB 4.0), retorna um objeto com os métodos disponíveis para serem rodados em uma sessão. Se o comando subsequente possuir um erro a sessão será abortada, caso contrário será enviada
+- `_runPaginatedQuery (query: { [key: string]: any }, page: number, size: number, sort: { [key: string]: 1|-1 } = {})`: Executa uma query e aplica paginação, retornando um objeto que obedece a interface [IPaginatedQueryResult](#ipaginatedqueryresult)
+
+#### Sessões
+
+Se a versão do MongoDB for 4.0 ou superior (com suporte a transações), para rodar um comando utilizando a estrutura de transações siga o exemplo:
+
+```ts
+import { Db, MongoClient } from 'mongodb'
+import { Person } from './classes/Person'
+
+class PersonRepository extends MongodbEventRepository<Person> {
+  constructor(connection: Db) {
+    super(connection.collection(Person.collection), Person)
+  }
+
+  async search (filters: { name: string }, page: number = 1, size: number = 50) {
+    const query = filters.name
+      ? { 'state.name': filters.name }
+      : { }
+
+    const { documents, count, range, total } = await this._runPaginatedQuery(query, page, size)
+    const entities = documents.map(({ events }) => new Person().setPersistedEvents(events))
+
+    return { entities, count, range, total }
+  }
+}
+
+(async function () {
+  const connection = (await MongoClient.connect('mongodb://urldomongodbaqui')).db('crowd')
+  const personRepository = new PersonRepository(connection)
+  const johnDoe = Person.create('johndoe@doe.com', 'jdoe')
+  await personRepository.save(johnDoe) // Criará um novo evento na classe
+  const allJanes = await personRepository.search({ name: 'jane' }, 1, 10) // Retornará um objeto que segue [IPaginatedQueryResult](#ipaginatedqueryresult)
+
+  johnDoe.changeEmail({ newEmail: 'johndoe@company.com' }, 'jdoe')
+  const [ janeDoe ] = allJanes
+  janeDoe.changeEmail({ newEmail: 'janedoe@doe.com' }, 'janedoe')
+
+  const session = connection.startSession()
+  await personRepository.withSession(session).bulkUpdate([ johnDoe, janeDoe ]) // Atualiza ambas as entidades no banco utilizando bulkWrite usando uma transação
+})()
+```
+
+> Se a sua versão do MongoDB **não** suportar transações, um erro por parte de banco de dados será enviado.
 
 ## Interfaces
 
