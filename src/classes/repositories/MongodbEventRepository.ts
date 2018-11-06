@@ -73,9 +73,10 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
    * @param {{[key: string]: any}}  query Query to be performed
    * @param {number} page Page to be returned
    * @param {number} size Number of results per page
+   * @param {{[field: string]: 1|-1}} sort Fields to sort
    * @returns {Promise} Set of results
    */
-  protected async _runPaginatedQuery (query: { [key: string]: any }, page: number, size: number): Promise<IPaginatedQueryResult<{ events: IEvent<TEntity>[] }>> {
+  protected async _runPaginatedQuery (query: { [key: string]: any }, page: number, size: number, sort: { [field: string]: 1 | -1 } = {}): Promise<IPaginatedQueryResult<{ events: IEvent<TEntity>[] }>> {
     const skip = (Number(page) - 1) * Number(size)
     const limit = Number(size)
 
@@ -83,7 +84,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
 
     if (total === 0) return { documents: [], count: 0, range: { from: 0, to: 0 }, total }
 
-    const documents = await this._collection.find(query, { skip, limit, projection: { events: 1 } }).toArray()
+    const documents = await this._collection.find(query, { skip, limit, projection: { events: 1 }, sort }).toArray()
 
     const count = documents.length
     const range = { from: skip, to: skip + count }
