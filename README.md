@@ -1,6 +1,8 @@
 <div style='width: 100%; text-align: center;'>
   <img style='margin: 0 auto;' src='./assets/logo.png'/>
 </div>
+<br/>
+<br/>
 
 > Toolkit to help developers implement the [event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) architecture
 
