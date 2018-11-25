@@ -139,11 +139,11 @@ export class Person extends EventEntity<Person> {
     })
   }
 
-  static create (email: string, name: string, user: string): Person { // Método para criar uma pessoa
+  static create (email: string, name: string, user: string): Person { // Method to create a person
     const id = new ObjectId()
     const person = new Person()
-    person.pushNewEvents([ new PersonWasCreated({id, name, email}, user) ]) // Inclui um novo evento ao criar
-    return person // Retorna a nova instancia
+    person.pushNewEvents([ new PersonWasCreated({id, name, email}, user) ]) // Includes a new event on creation
+    return person // Returns new instance
   }
 
   changeEmail (newEmail: string, user: string) {
@@ -194,7 +194,7 @@ class PersonRepository extends MongodbEventRepository<Person> {
   const personRepository = new PersonRepository(connection)
   const johnDoe = Person.create('johndoe@doe.com', 'jdoe')
   await personRepository.save(johnDoe) // Will create a new event in the class
-  const allJanes = await personRepository.search({ name: 'jane' }, 1, 10) // Will return an object implementing the [IPaginatedQueryResult](#ipaginatedqueryresult) interface
+  const allJanes = await personRepository.search({ name: 'jane' }, 1, 10) // Will return an object implementing the IPaginatedQueryResultinterface
 
   // If you like, there's a possibility to update multiple classes at the same time
   johnDoe.changeEmail({ newEmail: 'johndoe@company.com' }, 'jdoe')
