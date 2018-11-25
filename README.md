@@ -2,6 +2,11 @@
 
 > Toolkit to help developers implement the [event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) architecture
 
+[![Build Status](https://travis-ci.org/nxcd/paradox.svg?branch=master)](https://travis-ci.org/nxcd/paradox)
+[![GitHub license](https://img.shields.io/github/license/nxcd/paradox.svg)](https://github.com/nxcd/paradox/blob/master/LICENSE)
+[![Javascript code Style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) [![Github All Releases](https://img.shields.io/github/downloads/nxcd/paradox/total.svg)](https://github.com/nxcd/paradox)
+[![GitHub package version](https://img.shields.io/github/package-json/v/nxcd/paradox.svg)](https://github.com/nxcd/paradox) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0aa3e759b33b4fb6a11dae3e6ae6aca2)](https://app.codacy.com/app/khaosdoctor/paradox?utm_source=github.com&utm_medium=referral&utm_content=nxcd/paradox&utm_campaign=Badge_Grade_Dashboard)
+
 ## Summary
 
 - [Paradox](#paradox)
