@@ -1,5 +1,5 @@
 {
-  "name": "@nxcd/event-sourcing-toolkit",
+  "name": "@nxcd/paradox",
   "version": "2.6.0",
   "description": "",
   "main": "dist/index.js",
