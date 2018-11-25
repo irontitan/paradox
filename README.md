@@ -1,4 +1,6 @@
-# Paradox
+<div style='width: 100%; text-align: center;'>
+  <img style='margin: 0 auto;' src='./assets/logo.png'/>
+</div>
 
 > Toolkit to help developers implement the [event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) architecture
 
@@ -9,21 +11,20 @@
 
 ## Summary
 
-- [Paradox](#paradox)
-  - [Summary](#summary)
-  - [Instalation](#instalation)
-  - [Example](#example)
-    - [PersonWasCreated.ts event](#personwascreatedts-event)
-    - [PersonEmailChanged.ts event](#personemailchangedts-event)
-    - [Person.ts class](#personts-class)
-    - [Putting it all together](#putting-it-all-together)
-  - [What does this toolkit have?](#what-does-this-toolkit-have)
-  - [EventEntity](#evententity)
-  - [Repositories](#repositories)
-    - [MongodbEventRepository](#mongodbeventrepository)
-      - [Sessions](#sessions)
-  - [Interfaces](#interfaces)
-    - [IPaginatedQueryResult](#ipaginatedqueryresult)
+- [Summary](#summary)
+- [Instalation](#instalation)
+- [Example](#example)
+  - [PersonWasCreated.ts event](#personwascreatedts-event)
+  - [PersonEmailChanged.ts event](#personemailchangedts-event)
+  - [Person.ts class](#personts-class)
+  - [Putting it all together](#putting-it-all-together)
+- [What does this toolkit have?](#what-does-this-toolkit-have)
+- [EventEntity](#evententity)
+- [Repositories](#repositories)
+  - [MongodbEventRepository](#mongodbeventrepository)
+    - [Sessions](#sessions)
+- [Interfaces](#interfaces)
+  - [IPaginatedQueryResult](#ipaginatedqueryresult)
 
 ## Instalation
 
