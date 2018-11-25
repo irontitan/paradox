@@ -21,7 +21,7 @@
   - [EventEntity](#evententity)
   - [Repositories](#repositories)
     - [MongodbEventRepository](#mongodbeventrepository)
-      - [Sessões](#sessões)
+      - [Sessions](#sessions)
   - [Interfaces](#interfaces)
     - [IPaginatedQueryResult](#ipaginatedqueryresult)
 
@@ -263,7 +263,7 @@ By default, the class already has some base methods:
 - `withSession (session: ClientSession)`: Begins a MongoDB session to initiate a transaction (only on Mongo 4.0) and returns an object with the available methods which can be executed within a session. If this following command throws an error, the whole session suffers a rollback, otherwise it is commited.
 - `_runPaginatedQuery (query: { [key: string]: any }, page: number, size: number, sort: { [key: string]: 1|-1 } = {})`: Executes a query aplying pagination to the result. Returns an object that follows the [IPaginatedQueryResult](#ipaginatedqueryresult) interface.
 
-#### Sessões
+#### Sessions
 
 If your MongoDB version is 4.0 or higher (with transaction support), in order to execute a command using a transaction, follow this example:
 
