@@ -1,5 +1,7 @@
 # Paradox
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/0aa3e759b33b4fb6a11dae3e6ae6aca2)](https://app.codacy.com/app/khaosdoctor/paradox?utm_source=github.com&utm_medium=referral&utm_content=nxcd/paradox&utm_campaign=Badge_Grade_Dashboard)
+
 > Toolkit to help developers implement the [event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) architecture
 
 ## Summary
