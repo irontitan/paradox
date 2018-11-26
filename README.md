@@ -28,6 +28,8 @@
     - [Sessions](#sessions)
 - [Interfaces](#interfaces)
   - [IPaginatedQueryResult](#ipaginatedqueryresult)
+  - [IEntityConstructor](#ientityconstructor)
+- [My repository is not included, what do I do?](#my-repository-is-not-included-what-do-i-do)
 
 ## Instalation
 
@@ -365,3 +367,60 @@ interface IPaginatedQueryResult<TDocument> { // TDocument is the type that repre
   total: number // Query total
 }
 ```
+
+### IEntityConstructor
+
+Represents the constructor of an entity
+
+```ts
+interface IEntityConstructor<Entity> {
+  new(events?: IEvent<any>[]): Entity
+}
+```
+
+## My repository is not included, what do I do?
+
+Since this lib is open source and generic enough to be used by multiple repositories, there's no way to know which repositories the users are going to be using. So we added a way for you to create your own.
+
+In order to create a repository, your class **must** extend the `EventRepository` class, which is fully abstract and is as follows:
+
+```ts
+export interface IEntityConstructor<Entity> {
+  new(events?: IEvent<any>[]): Entity
+}
+
+export abstract class EventRepository<TEntity extends IEventEntity> {
+
+  protected readonly _Entity: IEntityConstructor<TEntity>
+
+  constructor (Entity: IEntityConstructor<TEntity>) {
+    this._Entity = Entity
+  }
+
+  abstract async save (entity: TEntity): Promise<TEntity>
+
+  abstract async findById (id: any): Promise<TEntity | null>
+
+  abstract async runPaginatedQuery (query: { [key: string]: any }, page: number, size: number, sort: { [field: string]: 1 | -1 }): Promise<IPaginatedQueryResult<{ events: IEvent<TEntity>[] }>>
+}
+```
+
+In order to maintain consistency between implementations, the following methods **must** be implemented:
+
+- `save`: Should save the given entity to the database and return the entity
+- `findById`: Should find an entity by its ID in the database. It is important to notice that, once found, the returned value should be a newly created instance of that entity (this is where you're going to use the `setPersistedEvents` method)
+- `runPaginatedQuery`: Should return a paginated query from the database
+
+Besides these methods, any class that extends `EventRepository` will inherit the `_Entity` property, which refers to the entity constructor. This will be used when returning the newly created entity from the database during the `findById` method and seting its persisted events on the newly instantiated class, like so:
+
+```ts
+async function findById (id) {
+  /* finds the data */
+  const instance = this._Entity() // Creates a new instance of <Entity>
+  return instance.setPersistedEvents(yourEvents) // Sets the returned data into the instance
+}
+```
+
+Those are the required implementations, any additional functionalities you'd like to include in the repository can be added at will.
+
+> For further explanation and examples, refer to the [MongodbEventRepository file in the `src` folder](./src/classes/repositories/MongodbEventRepository.ts)
