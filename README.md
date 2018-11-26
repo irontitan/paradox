@@ -21,6 +21,7 @@
   - [Person.ts class](#personts-class)
   - [Putting it all together](#putting-it-all-together)
 - [What does this toolkit have?](#what-does-this-toolkit-have)
+  - [API Summary](#api-summary)
 - [EventEntity](#evententity)
 - [Repositories](#repositories)
   - [MongodbEventRepository](#mongodbeventrepository)
@@ -49,7 +50,7 @@ $ yarn add @nxcd/paradox
 Event that will create the `Person` class
 
 ```ts
-import { Event } from '@nxcd/tardis'
+import { Event } from '@nxcd/paradox'
 import { Person } from './classes/Person'
 import ObjectId from 'bson-objectid'
 
@@ -85,7 +86,7 @@ class PersonWasCreated extends Event<IPersonCreationParams> {
 Triggered when a Person's email changes
 
 ```ts
-import { Event } from '@nxcd/tardis'
+import { Event } from '@nxcd/paradox'
 import { Person } from './classes/Person'
 import ObjectId from 'bson-objectid'
 
@@ -170,6 +171,7 @@ export class Person extends EventEntity<Person> {
 
 ```ts
 import { Db, MongoClient } from 'mongodb'
+import { MongodbEventRepository } from '@nxcd/paradox'
 import { Person } from './classes/Person'
 
 class PersonRepository extends MongodbEventRepository<Person> {
@@ -190,10 +192,10 @@ class PersonRepository extends MongodbEventRepository<Person> {
 }
 
 (async function () {
-  const connection = (await MongoClient.connect('mongodb://urldomongodbaqui')).db('crowd')
+  const connection = (await MongoClient.connect('mongodb://mongodburl')).db('crowd')
   const personRepository = new PersonRepository(connection)
-  const johnDoe = Person.create('johndoe@doe.com', 'jdoe')
-  await personRepository.save(johnDoe) // Will create a new event in the class
+  const johnDoe = Person.create('johndoe@doe.com', 'jdoe') // Will create a new event in the class
+  await personRepository.save(johnDoe) // Will persist the data to the database
   const allJanes = await personRepository.search({ name: 'jane' }, 1, 10) // Will return an object implementing the IPaginatedQueryResultinterface
 
   // If you like, there's a possibility to update multiple classes at the same time
@@ -210,6 +212,42 @@ class PersonRepository extends MongodbEventRepository<Person> {
 - `EventEntity`: Pre-made event-based class. It contains all the implementations to create a fully functional event sourcing entity
 - `MongoDBEventRepository`: MongoDB event-based repository (If you use another database, feel free to help us by writing a PR and adding it to the list :D)
 - Typing helpers
+- A bare export of the [Tardis](https://github.com/nxcd/tardis) toolkit
+
+### API Summary
+
+> EventEntity<BusinessEntity>
+
+**TL;DR**: Represents an business entity with event sourcing properties. Must **always** be extended. Must **always** contain a `state` getter which returns the final state of the entity
+
+**Properties**:
+
+- *public* `persistedEvents`: Array of events that were persisted to the database
+- *public* `pendingEvents`: Array of events that have not yet been persisted to the database
+- *protected* `reducer`: A reducer instance as described in the [Tardis](https://github.com/nxcd/tardis) documentation
+- *get* `state`: Returns the final state of the entity (**must** be implemented)
+
+**Methods:**
+
+- *public* `setPersistedEvents(events: Array<{id, name, data, timestamp}>)`: Sets the `persistedEvents` property with the `events` array
+- *public* `pushNewEvents(events: Array<{id, name, data, timestamp}>)`: Pushes a new event to the `pendingEvents` array
+- *public* `confirmEvents()`: Transfers all the content from the `pendingEvents` array to the `persistedEvents` array
+
+> MongodbEventRepository<BusinessEntity>
+
+**TL;DR**: Represents a database that is fully suited to use event-based classes
+
+**Properties**:
+
+- *protected* `_collection`: Collection name
+
+**Methods**:
+
+- *public* `save(entity: BusinessEntity)`: Saves the current entity to the database
+- *public* `bulkUpdate(entities: EventEntity[], session)`: Updates multiple entities at once
+- *public* `findById(id: string | ObjectId)`: Finds an entity by the provided ID
+- *public* `withSession(session: ClientSession)`: Starts a MongoDB session and returns the available methods that can be used with the provided session
+- *protected* `_runPaginatedQuery(query: {[key: string]: any}, page: number, size: number, sort?: {[field: string]: 1|-1})`: Runs a query in the database and return the paginated results
 
 ## EventEntity
 
@@ -272,6 +310,7 @@ If your MongoDB version is 4.0 or higher (with transaction support), in order to
 
 ```ts
 import { Db, MongoClient } from 'mongodb'
+import { MongodbEventRepository } from '@nxcd/paradox'
 import { Person } from './classes/Person'
 
 class PersonRepository extends MongodbEventRepository<Person> {
