@@ -279,7 +279,7 @@ Since different databases have different event sourcing implementations, for now
 
 > Note that different repository classes might behave differently depending on who created the class, please refer to the PR section or fill in an issue if you're experiencing troubles.
 
-- [MongoDB event-based repository](./src/classes/repositories/docs/MongodbEventRepository.md)
+- [MongoDB event-based repository](./docs/MongodbEventRepository.md)
 
 ## Interfaces
 
@@ -354,7 +354,7 @@ async function findById (id) {
 
 Those are the required implementations, any additional functionalities you'd like to include in the repository can be added at will.
 
-> For further explanation and examples, refer to the [MongodbEventRepository file in the `src` folder](./src/classes/repositories/MongodbEventRepository.ts)
+> For further explanation and examples, refer to the [MongodbEventRepository file in the `src` folder](./docs/MongodbEventRepository.md)
 
 ### Adding your repository to the list
 
@@ -362,7 +362,7 @@ If you'd like to add your repository to the list of included repositories, pleas
 
 - All names are CamelCase
 - Private variables come with an `_` preceding it
-- Do **not** forget to add the documentation to this repository in the `src/classes/repositories/docs/` folder (the file should be the same name as your class)
+- Do **not** forget to add the documentation to this repository in the `docs/` folder (the file should be the same name as your class)
 - Do **not** forget to add your repository to the list in this README along with the link to its own docs
 
 Thank you for your contribution :D
