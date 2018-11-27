@@ -77,7 +77,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> exten
    * @param {{[field: string]: 1|-1}} sort Fields to sort
    * @returns {Promise} Set of results
    */
-  async runPaginatedQuery (query: { [key: string]: any }, page: number, size: number, sort: { [field: string]: 1 | -1 } = {}): Promise<IPaginatedQueryResult<{ events: IEvent<TEntity>[] }>> {
+  async _runPaginatedQuery (query: { [key: string]: any }, page: number, size: number, sort: { [field: string]: 1 | -1 } = {}): Promise<IPaginatedQueryResult<{ events: IEvent<TEntity>[] }>> {
     const skip = (Number(page) - 1) * Number(size)
     const limit = Number(size)
 
