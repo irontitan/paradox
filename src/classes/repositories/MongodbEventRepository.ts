@@ -1,7 +1,7 @@
 import { IEvent } from '@nxcd/tardis'
-import { Collection, ObjectId, ClientSession } from 'mongodb'
+import { EventRepository, IEntityConstructor } from './EventRepository'
 import { IEventEntity } from '../../interfaces/IEventEntity'
-import { IEventRepository } from '../../interfaces/IEventRepository'
+import { Collection, ObjectId, ClientSession } from 'mongodb'
 import { IPaginatedQueryResult } from '../../interfaces/IPaginatedQueryResult'
 
 interface IDatabaseDocument {
@@ -9,19 +9,20 @@ interface IDatabaseDocument {
   events: IEvent<any>[]
 }
 
-interface Constructor<Entity> {
-  new(events?: IEvent<any>[]): Entity
-}
-
-export abstract class MongodbEventRepository<TEntity extends IEventEntity> implements IEventRepository<TEntity> {
+export abstract class MongodbEventRepository<TEntity extends IEventEntity> extends EventRepository<TEntity> {
   protected _collection: Collection
-  private _Entity: Constructor<TEntity>
 
-  constructor (collection: Collection, Entity: Constructor<TEntity>) {
+  constructor (collection: Collection, Entity: IEntityConstructor<TEntity>) {
+    super(Entity)
     this._collection = collection
-    this._Entity = Entity
   }
 
+  /**
+   * Tries to execute function using given session
+   * @param {Function} fn Function to be executed
+   * @param {ClientSession} session MongoDB user session
+   * @returns {*} Function result
+   */
   protected async _tryRunningWithSession (fn: Function, session: ClientSession) {
     session.startTransaction()
     try {
@@ -76,7 +77,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
    * @param {{[field: string]: 1|-1}} sort Fields to sort
    * @returns {Promise} Set of results
    */
-  protected async _runPaginatedQuery (query: { [key: string]: any }, page: number, size: number, sort: { [field: string]: 1 | -1 } = {}): Promise<IPaginatedQueryResult<{ events: IEvent<TEntity>[] }>> {
+  async _runPaginatedQuery (query: { [key: string]: any }, page: number, size: number, sort: { [field: string]: 1 | -1 } = {}): Promise<IPaginatedQueryResult<{ events: IEvent<TEntity>[] }>> {
     const skip = (Number(page) - 1) * Number(size)
     const limit = Number(size)
 
@@ -136,6 +137,11 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> imple
     return new this._Entity().setPersistedEvents(document.events)
   }
 
+  /**
+   * Executes the following command using a MongoDB session
+   * @param {ClientSession} session MongoDB client session
+   * @returns {{bulkUpdate: Function}} Available commands
+   */
   withSession (session: ClientSession) {
     return {
       bulkUpdate: (entities: IEventEntity[]) => this._tryRunningWithSession(() => this.bulkUpdate(entities, session), session)
