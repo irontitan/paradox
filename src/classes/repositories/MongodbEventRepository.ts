@@ -127,7 +127,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> exten
   async findById (id: string | ObjectId): Promise<TEntity | null> {
     if (!ObjectId.isValid(id)) return null
 
-    const document: IDatabaseDocument = await this._collection.findOne(
+    const document: IDatabaseDocument | null = await this._collection.findOne(
       { _id: new ObjectId(id) },
       { projection: { state: 1, events: 1 } }
     )
