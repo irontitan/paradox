@@ -104,13 +104,13 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> exten
    */
   async bulkUpdate (entities: IEventEntity[], session?: ClientSession): Promise<void> {
     const operations = entities.filter((entity) => entity.pendingEvents.length > 0)
-      .map(productionOrder => {
+      .map(entity => {
         return {
           updateOne: {
-            filter: { _id: productionOrder.id },
+            filter: { _id: entity.id },
             update: {
-              $set: { state: productionOrder.state },
-              $push: { events: { $each: productionOrder.pendingEvents } }
+              $set: { state: entity.state },
+              $push: { events: { $each: entity.pendingEvents } }
             }
           }
         }
