@@ -117,6 +117,33 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> exten
       })
 
     await this._collection.bulkWrite(operations, { ordered: true, session })
+
+    entities.forEach((entity) => entity.confirmEvents())
+  }
+
+  /**
+   * Inserts a series of entities on the database
+   * This uses a transaction to ensure no leftovers in case of failure
+   * If mongodb version is inferior to 4.0, no transactions are used,
+   * and the operations become ACID
+   * @param {TEntity[]} entities Array of entities to be inserted
+   */
+  async bulkInsert (entities: IEventEntity[], session?: ClientSession): Promise<void> {
+    const operations = entities.filter((entity) => entity.pendingEvents.length > 0)
+      .map(entity => {
+        return {
+          insertOne: {
+            document: {
+              state: entity.state,
+              events: entity.pendingEvents
+            }
+          }
+        }
+      })
+
+    await this._collection.bulkWrite(operations, { ordered: true, session })
+
+    entities.forEach((entity) => entity.confirmEvents())
   }
 
   /**
@@ -144,7 +171,8 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> exten
    */
   withSession (session: ClientSession) {
     return {
-      bulkUpdate: (entities: IEventEntity[]) => this._tryRunningWithSession(() => this.bulkUpdate(entities, session), session)
+      bulkUpdate: (entities: IEventEntity[]) => this._tryRunningWithSession(() => this.bulkUpdate(entities, session), session),
+      bulkInsert: (entities: IEventEntity[]) => this._tryRunningWithSession(() => this.bulkInsert(entities, session), session),
     }
   }
 }
