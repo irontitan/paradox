@@ -23,7 +23,8 @@ By default, the class already has some base methods:
 
 > This record should be created when the class is instantiated using the `create` method
 
-- `bulkUpdate (entities: IEventEntity[])`: Save events from several instances of an entity at once
+- `bulkUpdate (entities: IEventEntity[])`: Save events from several instances of an existing entity at once
+- `bulkInsert (entities: IEventEntity[])`: Save events from several instances of an non existing entity at once
 - `withSession (session: ClientSession)`: Begins a MongoDB session to initiate a transaction (only on Mongo 4.0) and returns an object with the available methods which can be executed within a session. If this following command throws an error, the whole session suffers a rollback, otherwise it is commited.
 - `_runPaginatedQuery (query: { [key: string]: any }, page: number, size: number, sort: { [key: string]: 1|-1 } = {})`: Executes a query aplying pagination to the result. Returns an object that follows the [IPaginatedQueryResult](#ipaginatedqueryresult) interface.
 

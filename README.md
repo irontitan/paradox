@@ -247,6 +247,7 @@ class PersonRepository extends MongodbEventRepository<Person> {
 
 - *public* `save(entity: BusinessEntity)`: Saves the current entity to the database
 - *public* `bulkUpdate(entities: EventEntity[], session)`: Updates multiple entities at once
+- *public* `bulkInsert(entities: EventEntity[], session)`: Inserts multiple entities at once
 - *public* `findById(id: string | ObjectId)`: Finds an entity by the provided ID
 - *public* `withSession(session: ClientSession)`: Starts a MongoDB session and returns the available methods that can be used with the provided session
 - *protected* `_runPaginatedQuery(query: {[key: string]: any}, page: number, size: number, sort?: {[field: string]: 1|-1})`: Runs a query in the database and return the paginated results
