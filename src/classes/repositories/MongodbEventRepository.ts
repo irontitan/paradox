@@ -102,7 +102,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> exten
    * and the operations become ACID
    * @param {TEntity[]} entities Array of entities to be updated
    */
-  async bulkUpdate (entities: IEventEntity[], session?: ClientSession): Promise<void> {
+  async bulkUpdate (entities: IEventEntity[], session?: ClientSession): Promise<TEntity[]> {
     const operations = entities.filter((entity) => entity.pendingEvents.length > 0)
       .map(entity => {
         return {
@@ -118,7 +118,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> exten
 
     await this._collection.bulkWrite(operations, { ordered: true, session })
 
-    entities.forEach((entity) => entity.confirmEvents())
+    return entities.map((entity) => entity.confirmEvents())
   }
 
   /**
@@ -128,7 +128,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> exten
    * and the operations become ACID
    * @param {TEntity[]} entities Array of entities to be inserted
    */
-  async bulkInsert (entities: IEventEntity[], session?: ClientSession): Promise<void> {
+  async bulkInsert (entities: IEventEntity[], session?: ClientSession): Promise<TEntity[]> {
     const operations = entities.filter((entity) => entity.pendingEvents.length > 0)
       .map(entity => {
         return {
@@ -143,7 +143,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> exten
 
     await this._collection.bulkWrite(operations, { ordered: true, session })
 
-    entities.forEach((entity) => entity.confirmEvents())
+    return entities.map((entity) => entity.confirmEvents())
   }
 
   /**
