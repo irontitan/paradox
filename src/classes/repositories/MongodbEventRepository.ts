@@ -134,6 +134,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> exten
         return {
           insertOne: {
             document: {
+              _id: entity.id,
               state: entity.state,
               events: entity.pendingEvents
             }
