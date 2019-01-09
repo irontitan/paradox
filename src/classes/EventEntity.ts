@@ -2,7 +2,6 @@ import { IEvent, Reducer, ICommitFunction } from '@nxcd/tardis'
 import { IEventEntity } from '../interfaces/IEventEntity'
 
 export abstract class EventEntity<TEntity> implements IEventEntity {
-  [key: string]: any
   persistedEvents: IEvent<any>[] = []
   pendingEvents: IEvent<any>[] = []
   id: any = null
