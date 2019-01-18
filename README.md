@@ -123,6 +123,8 @@ class PersonEmailChanged extends Event<IPersonEmailChangeParams> {
 
 The main `Person` entity.
 
+> Since version 2.9.0, EventEntity's constructor receives, as a second parameter the Entity class itself. This is used to update the state internally when adding new events. For now, this second parameter is optional. Not passing it, though, is considered deprecated and will stop being supported on the future
+
 ```ts
 import ObjectId from 'bson-objectid'
 import { EventEntity } from '@nxcd/paradox'
@@ -139,7 +141,7 @@ export class Person extends EventEntity<Person> {
   constructor() {
     super({
       [ PersonWasCreated.eventName ]: PersonWasCreated.commit
-    })
+    }, Person)
   }
 
   static create (email: string, name: string, user: string): Person { // Method to create a person
@@ -259,7 +261,7 @@ An `EventEntity` is a business class which posesses the implementation of all ev
 - `persistedEvents`: An array of events which were already persistted to the database. It follows the `{id, name, data, timestamp}` format
 - `pendingEvents`: An array of events which were not yet saved to the database
 
-When created, the new entity will receive (as a parameter) an object, of which the keys must be the name of an event and its value must be the `commit` function, which can be located anywhere, but, in our little example above, we created it as a static method inside the event entity itself.
+When created, the new entity will receive (as a parameter) an object, of which the keys must be the name of an event and its value must be the `commit` function, which can be located anywhere, but, in our little example above, we created it as a static method inside the event entity itself. Since v2.9.0, it also receives the entity class itself, to be used for internal purposes.
 
 This procedure is the same for all the events that entity might have, this is due to the fact that the `EventEntity`, when instantiated, will create a [Reducer](http://github.com/nxcd/tardis#reducer) instance in the property `this.reducer` and it'll pass on all these known events to it so it can be possible to manage all events inside the same class, without the need to instantiate something new.
 
@@ -272,6 +274,8 @@ Besides `state`, the `EventEntity` class will disclose several other methods suc
 - `setPersistedEvents`: Which will receive an array of events in the `{id, name, data, timestamp}` format, fetched from the database, and it'll include these events into the `persistedEvents` array. It'll be often used when loading a class for the first time from the database.
 - `pushNewEvents`: Will receive an event array following the same `{id, name, data, timestamp}` format, but instead of adding them to the persisted events array, it'll add the events to the `pendingEvents` array and thus, notifying that there are events which were not yet persisted to the database and are only available inside this instance.
 - `confirmEvents`: Will move all the items from the `pendingEvents` array to the `persistedEvents` array. This will confirm that all the events were successfuly saved into the database. This will be often used after we save the last state of the entity to the database.
+
+All of the three methods above call the private method `updateState`, which sets all properties from the current state back to the instance of the entity class.
 
 ## Repositories
 
