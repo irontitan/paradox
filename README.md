@@ -123,7 +123,7 @@ class PersonEmailChanged extends Event<IPersonEmailChangeParams> {
 
 The main `Person` entity.
 
-> Since version 2.9.0, EventEntity's constructor receives, as a second parameter the Entity class itself. This is used to update the state internally when adding new events. For now, this second parameter is optional. Not passing it, though, is considered deprecated and will stop being supported on the future
+> Since version 2.9.0, EventEntity's constructor receives, as a second parameter, the Entity class itself. This is used to update the state internally when adding new events. For now, this second parameter is optional. **Not passing it, though, is considered deprecated and will stop being supported on the future**
 
 ```ts
 import ObjectId from 'bson-objectid'
@@ -275,7 +275,7 @@ Besides `state`, the `EventEntity` class will disclose several other methods suc
 - `pushNewEvents`: Will receive an event array following the same `{id, name, data, timestamp}` format, but instead of adding them to the persisted events array, it'll add the events to the `pendingEvents` array and thus, notifying that there are events which were not yet persisted to the database and are only available inside this instance.
 - `confirmEvents`: Will move all the items from the `pendingEvents` array to the `persistedEvents` array. This will confirm that all the events were successfuly saved into the database. This will be often used after we save the last state of the entity to the database.
 
-All of the three methods above call the private method `updateState`, which sets all properties from the current state back to the instance of the entity class.
+> All of the three methods above call the private method `updateState`, which sets all properties from the current state back to the instance of the entity class. Which means that, when an event changes the value of a property, you don't need to recalculate the state altogether once again, it'll be automatically updated and available through `this.propertyName`
 
 ## Repositories
 
