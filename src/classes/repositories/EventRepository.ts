@@ -1,10 +1,7 @@
 import { IEvent } from '@nxcd/tardis'
 import { IEventEntity } from '../../interfaces/IEventEntity'
+import { IEntityConstructor } from '../../interfaces/IEntityConstructor'
 import { IPaginatedQueryResult } from '../../interfaces/IPaginatedQueryResult'
-
-export interface IEntityConstructor<Entity> {
-  new(events?: IEvent<any>[]): Entity
-}
 
 export abstract class EventRepository<TEntity extends IEventEntity> {
 
