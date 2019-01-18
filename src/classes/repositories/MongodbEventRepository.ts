@@ -1,7 +1,8 @@
 import { IEvent } from '@nxcd/tardis'
-import { EventRepository, IEntityConstructor } from './EventRepository'
+import { EventRepository } from './EventRepository'
 import { IEventEntity } from '../../interfaces/IEventEntity'
 import { Collection, ObjectId, ClientSession } from 'mongodb'
+import { IEntityConstructor } from '../../interfaces/IEntityConstructor'
 import { IPaginatedQueryResult } from '../../interfaces/IPaginatedQueryResult'
 
 interface IDatabaseDocument {
