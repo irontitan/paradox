@@ -29,7 +29,7 @@ export abstract class EventEntity<TEntity> implements IEventEntity {
 
   private updateState () {
     const state = this._Entity
-      ? this.reducer.reduce(new this._Entity(), [ ...this.pendingEvents, ...this.persistedEvents ])
+      ? this.reducer.reduce(new this._Entity(), [ ...this.persistedEvents, ...this.pendingEvents ])
       : this.state
 
     for (const propertyName of Object.keys(state)) {
