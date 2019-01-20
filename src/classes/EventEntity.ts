@@ -1,6 +1,5 @@
 import { IEvent, Reducer, ICommitFunction } from '@nxcd/tardis'
 import { IEventEntity } from '../interfaces/IEventEntity'
-import { IEntityConstructor } from '../interfaces/IEntityConstructor';
 
 export abstract class EventEntity<TEntity> implements IEventEntity {
   [key: string]: any
@@ -9,18 +8,9 @@ export abstract class EventEntity<TEntity> implements IEventEntity {
   id: any = null
 
   protected reducer: Reducer<TEntity>
-  protected _Entity?: IEntityConstructor<TEntity>
 
-  constructor (knownEvents: { [eventName: string]: ICommitFunction<TEntity, any> }, entity?: IEntityConstructor<TEntity>) {
+  constructor (knownEvents: { [eventName: string]: ICommitFunction<TEntity, any> }) {
     this.reducer = new Reducer<TEntity>(knownEvents)
-
-    // TODO: Remove this on next major version
-    if (!entity) {
-      console.warn("[@nxcd/paradox] DEPRECATED: Calling EventEntity's constructor without passing the Entity constructor is deprecated and will stop being supported soon")
-      return
-    }
-
-    this._Entity = entity
   }
 
   get state (): any {
@@ -28,9 +18,7 @@ export abstract class EventEntity<TEntity> implements IEventEntity {
   }
 
   private updateState () {
-    const state = this._Entity
-      ? this.reducer.reduce(new this._Entity(), [ ...this.persistedEvents, ...this.pendingEvents ])
-      : this.state
+    const state = this.state
 
     for (const propertyName of Object.keys(state)) {
       this[propertyName] = state[propertyName]
