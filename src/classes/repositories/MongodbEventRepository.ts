@@ -171,7 +171,7 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> exten
    * If the document exist. it will return true
    * @param {Object} query with mongo query
    */
-  protected async _existBy (query: { [key: string]: any }): Promise<Boolean> {
+  protected async existBy (query: { [key: string]: any }): Promise<boolean> {
     const documentExists = await this._collection.find(query)
       .limit(1)
       .count()
