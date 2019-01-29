@@ -23,7 +23,7 @@ By default, the class already has some base methods:
 
 > This record should be created when the class is instantiated using the `create` method
 
-- `existBy (query: { [key: string]: any })`: Verify if an object exist (by a query) and returns a boolean flag
+- `existBy (query: { [key: string]: any })`: Returns a boolean value to check if an object exists using a given query
 - `bulkUpdate (entities: IEventEntity[])`: Save events from several instances of an existing entity at once
 - `bulkInsert (entities: IEventEntity[])`: Save events from several instances of an non existing entity at once
 - `withSession (session: ClientSession)`: Begins a MongoDB session to initiate a transaction (only on Mongo 4.0) and returns an object with the available methods which can be executed within a session. If this following command throws an error, the whole session suffers a rollback, otherwise it is commited.
@@ -59,13 +59,15 @@ class PersonRepository extends MongodbEventRepository<Person> {
 
 (async function () {
   const personData = { email:'johndoe@doe.com', password:'jdoe' }
-  const connection = (await MongoClient.connect('mongodb://urldomongodbaqui')).db('crowd')
+  const connection = (await MongoClient.connect('mongodb://mongodburl')).db('crowd')
+  
   const personRepository = new PersonRepository(connection)
   const existPerson = await personRepository.existBy({ email: emailpersonData.email }) // Returns boolean
   if (!existPerson) {
     const johnDoe = Person.create(personData.email, personData.password)
     await personRepository.save(johnDoe) // Creates a new event 
   }
+  
   const allJanes = await personRepository.search({ name: 'jane' }, 1, 10) // Returns an object following IPaginatedQueryResult interface
 
   johnDoe.changeEmail({ newEmail: 'johndoe@company.com' }, 'jdoe')
