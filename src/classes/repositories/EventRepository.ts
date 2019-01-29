@@ -15,7 +15,7 @@ export abstract class EventRepository<TEntity extends IEventEntity> {
 
   abstract async findById (id: any): Promise<TEntity | null>
 
-  abstract async _existBy (query: { [key: string]: any }): Promise<Boolean>
+  protected abstract async _existBy (query: { [key: string]: any }): Promise<Boolean>
 
   abstract async _runPaginatedQuery (query: { [key: string]: any }, page: number, size: number, sort: { [field: string]: 1 | -1 }): Promise<IPaginatedQueryResult<{ events: IEvent<TEntity>[] }>>
 }
