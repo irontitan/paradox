@@ -23,6 +23,7 @@ By default, the class already has some base methods:
 
 > This record should be created when the class is instantiated using the `create` method
 
+- `existBy (query: { [key: string]: any })`: Verify if an object exist (by a query) and returns a boolean flag
 - `bulkUpdate (entities: IEventEntity[])`: Save events from several instances of an existing entity at once
 - `bulkInsert (entities: IEventEntity[])`: Save events from several instances of an non existing entity at once
 - `withSession (session: ClientSession)`: Begins a MongoDB session to initiate a transaction (only on Mongo 4.0) and returns an object with the available methods which can be executed within a session. If this following command throws an error, the whole session suffers a rollback, otherwise it is commited.
@@ -53,12 +54,6 @@ class PersonRepository extends MongodbEventRepository<Person> {
     const entities = documents.map(({ events }) => new Person().setPersistedEvents(events))
 
     return { entities, count, range, total }
-  }
-
-  async existBy(fields){
-    // Prepare your query
-    const person.login = fields
-    return await this._existBy({ person }) //Returns boolean
   }
 }
 
