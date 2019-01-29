@@ -54,13 +54,23 @@ class PersonRepository extends MongodbEventRepository<Person> {
 
     return { entities, count, range, total }
   }
+
+  async existBy(fields){
+    // Prepare your query
+    const person.login = fields
+    return await this._existBy({ person }) //Returns boolean
+  }
 }
 
 (async function () {
+  const personData = { email:'johndoe@doe.com', password:'jdoe' }
   const connection = (await MongoClient.connect('mongodb://urldomongodbaqui')).db('crowd')
   const personRepository = new PersonRepository(connection)
-  const johnDoe = Person.create('johndoe@doe.com', 'jdoe')
-  await personRepository.save(johnDoe) // Creates a new event
+  const existPerson = await personRepository.existBy({ email: emailpersonData.email }) // Returns boolean
+  if (!existPerson) {
+    const johnDoe = Person.create(personData.email, personData.password)
+    await personRepository.save(johnDoe) // Creates a new event 
+  }
   const allJanes = await personRepository.search({ name: 'jane' }, 1, 10) // Returns an object following IPaginatedQueryResult interface
 
   johnDoe.changeEmail({ newEmail: 'johndoe@company.com' }, 'jdoe')

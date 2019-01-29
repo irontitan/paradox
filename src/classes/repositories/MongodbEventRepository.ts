@@ -167,6 +167,19 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> exten
   }
 
   /**
+   * Verify if a document exist by a query
+   * If the document exist. it will return true
+   * @param {Object} query with mongo query
+   */
+  protected async _existBy (query: { [key: string]: any }): Promise<Boolean> {
+    const documentExists = await this._collection.find(query)
+      .limit(1)
+      .count()
+
+    return Boolean(documentExists)
+  }
+
+  /**
    * Executes the following command using a MongoDB session
    * @param {ClientSession} session MongoDB client session
    * @returns {{bulkUpdate: Function}} Available commands
