@@ -2,6 +2,7 @@
   "name": "@nxcd/paradox",
   "version": "2.10.1",
   "description": "",
+  "repository": "github:nxcd/paradox",
   "main": "dist/index.js",
   "scripts": {
     "prepublish": "npm run build:clean",
