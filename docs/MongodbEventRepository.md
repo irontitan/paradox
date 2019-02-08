@@ -13,10 +13,12 @@ Data repository made for MongoDB databases. This repository **must** be extended
 
 By default, the class already has some base methods:
 
-- `save (entity: TEntity)`: Which will serialize and save the received entity (which must be of the same type you passed to the generic type `TEntity` in `MongodbEventRepository<TEntity>`) on the database.
+- `save (entity: TEntity, force: Boolean = false)`: Which will serialize and save the received entity (which must be of the same type you passed to the generic type `TEntity` in `MongodbEventRepository<TEntity>`) on the database.
 
-> This method works by firstly trying to find the entity by its ID, if the ID cannot be found in the database, then a new document will be created, following the `{_id, events, state}` format where `events` should start as an empty array and, at each `save`, the `pendingEvents` array will be merged to it. Soon after that, the `confirmEvents` method will be called, thus clearing the `pendingEvents` array.
->
+> This method works by firstly trying to find the entity by its ID, if the ID cannot be found in the database, then a new document will be created, following the `{_id, events, state}` format where `events` should start as an empty array and, by default, at each `save`, the `pendingEvents` array will be merged to it; the `force` option, explained below, changes this saving behaviour. Soon after that, the `confirmEvents` method will be called, thus clearing the `pendingEvents` array.
+
+> The `force` option changes the behaviour stated above. When this flag is set to `true`, the repository will not append the `pendingEvents` array to the end of the database `events` array. Instead, it'll override the whole saved events array; so be  **_really_** careful when using this option. For instance, misusing this could lead to data loss on concurrent write scenarios. Consider this as rewriting the history of a git repository with a `push --force`: it's there, it can be done, but, in most situations, you really shouldn't.
+
 > `state` will be the last reduced state of the entity, which will be obtained by calling the `state` getter we just defined earlier.
 
 - `findById (id: ObjectId)`: Will search in the database for a record with the informed `id`.
