@@ -25,6 +25,13 @@ export abstract class EventEntity<TEntity> implements IEventEntity {
     }
   }
 
+  get events () {
+    return [
+      ...this.persistedEvents,
+      ...this.pendingEvents
+    ]
+  }
+
   setPersistedEvents (events: IEvent<any>[]) {
     this.persistedEvents = events
     this.updateState()

@@ -3,6 +3,7 @@ import { IEvent } from '@nxcd/tardis'
 export interface IEventEntity {
   id: any
   state: any
+  events: IEvent<any>[]
   persistedEvents: IEvent<any>[]
   pendingEvents: IEvent<any>[]
   /**
