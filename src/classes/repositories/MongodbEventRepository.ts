@@ -54,16 +54,15 @@ export abstract class MongodbEventRepository<TEntity extends IEventEntity> exten
    * Creates or updates an entity in the database
    * @param {TEntity} entity Entity to be saved (upserted) to the bank
    */
-  async save (entity: TEntity): Promise<TEntity> {
-    const { state, pendingEvents } = entity
+  async save (entity: TEntity, force: Boolean = false): Promise<TEntity> {
+    const { state, events, pendingEvents } = entity
     const document = await this.findById(entity.id)
 
     if (!document) return this._create(entity)
 
-    const operations = {
-      $set: { state },
-      $push: { events: { $each: pendingEvents } }
-    }
+    const operations = force
+      ? { $set: { state, events } }
+      : { $set: { state }, $push: { events: { $each: pendingEvents } } }
 
     await this._collection.updateOne({ _id: new ObjectId(entity.id) }, operations)
 
