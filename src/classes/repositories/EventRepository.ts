@@ -11,7 +11,7 @@ export abstract class EventRepository<TEntity extends IEventEntity> {
     this._Entity = Entity
   }
 
-  abstract async save (entity: TEntity, force: Boolean): Promise<TEntity>
+  abstract async save (entity: TEntity, force?: Boolean): Promise<TEntity>
 
   abstract async findById (id: any): Promise<TEntity | null>
     
