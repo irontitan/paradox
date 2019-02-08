@@ -1,6 +1,6 @@
 {
   "name": "@nxcd/paradox",
-  "version": "2.10.1",
+  "version": "2.11.0",
   "description": "",
   "repository": "github:nxcd/paradox",
   "main": "dist/index.js",
