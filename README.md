@@ -247,7 +247,7 @@ class PersonRepository extends MongodbEventRepository<Person> {
 
 **Methods**:
 
-- *public* `save(entity: BusinessEntity)`: Saves the current entity to the database
+- *public* `save(entity: BusinessEntity, force: Boolean = false)`: Saves the current entity to the database by either pushing new events, or overriding the events array **(Be VERY carefull with the last one)**
 - *public* `bulkUpdate(entities: EventEntity[], session)`: Updates multiple entities at once
 - *public* `bulkInsert(entities: EventEntity[], session)`: Inserts multiple entities at once
 - *public* `findById(id: string | ObjectId)`: Finds an entity by the provided ID
@@ -283,7 +283,7 @@ Repositories are places where data resides, by default, we would not have to cre
 
 Since different databases have different event sourcing implementations, for now, we only have the ones listed below.
 
-> Note that different repository classes might behave differently depending on who created the class, please refer to the PR section or fill in an issue if you're experiencing troubles.
+> Note that different repository classes might behave differently depending on who created the class, please refer to the PR section or fill in an issue if you're experiencing trouble.
 
 - [MongoDB event-based repository](./docs/MongodbEventRepository.md)
 
@@ -367,7 +367,7 @@ Those are the required implementations, any additional functionalities you'd lik
 If you'd like to add your repository to the list of included repositories, please fill in a PR and don't forget to stick to some conventions:
 
 - All names are CamelCase
-- Private variables come with an `_` preceding it
+- Private methods start their names with `_`
 - Do **not** forget to add the documentation to this repository in the `docs/` folder (the file should be the same name as your class)
 - Do **not** forget to add your repository to the list in this README along with the link to its own docs
 
