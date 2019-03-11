@@ -86,7 +86,7 @@ export class SegregatedMongodbEventRepository<TEntity extends SegregatedEventEnt
 
     if (force) await this._eventCollection.remove({ entityId: entity.id }, { session })
 
-    await this._eventCollection.insertMany(events, { ordered: true, session })
+    await this._eventCollection.insertMany(events.map(({ id, ...event }) => ({ _id: id, ...event })), { ordered: true, session })
 
     entity.confirmEvents()
 
@@ -94,7 +94,9 @@ export class SegregatedMongodbEventRepository<TEntity extends SegregatedEventEnt
       return this._updateState(entity, session)
     }
 
-    await this._stateCollection.insertOne(entity.state, { session })
+    const { id, ...state } = entity.state
+
+    await this._stateCollection.insertOne({ _id: id, ...state }, { session })
 
     return entity
   }
@@ -109,9 +111,9 @@ export class SegregatedMongodbEventRepository<TEntity extends SegregatedEventEnt
 
     const entityIds = await this._stateCollection.find(query, { skip, limit, projection: { _id: 1 }, sort })
       .toArray()
-      .then(states => states.map(({ _id }: { _id: ObjectId }) => _id.toHexString()))
+      .then(states => states.map(({ _id }: { _id: ObjectId }) => _id))
 
-    const events = await this._eventCollection.find({ entityId: { $in: entityIds } }, { skip, limit, projection: { events: 1 }, sort }).toArray()
+    const events = await this._eventCollection.find({ entityId: { $in: entityIds } }, { skip, limit, sort }).toArray()
 
     const eventsHashMap: IHashMap<ISegregatedEvent<unknown>> = events.reduce((hashMap: IHashMap<ISegregatedEvent<unknown>>, event: ISegregatedEvent<unknown>) => {
       hashMap[event.entityId as string] = hashMap[event.entityId as any] || []

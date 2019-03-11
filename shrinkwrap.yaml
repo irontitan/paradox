@@ -1,7 +1,7 @@
 dependencies:
   '@nxcd/tardis': 2.0.1
 devDependencies:
-  '@types/mongodb': 3.1.21
+  '@types/mongodb': 3.1.22
   '@types/node': 10.12.30
   standard: 12.0.1
   typescript: 3.3.3333
@@ -31,13 +31,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-9IdED8wU93ty8gP06ninox+42SBSJHp2IAamsSYMUY76mshRTeUsid/gtbl8ovnOwy8im41ib4cxTiIYMXGKew==
-  /@types/mongodb/3.1.21:
+  /@types/mongodb/3.1.22:
     dependencies:
       '@types/bson': 4.0.0
       '@types/node': 10.12.30
     dev: true
     resolution:
-      integrity: sha512-V1W/OFjUdz8xeVetg37eF1tpC+4y60YAn5pgB1pGW58oxNwNw/gU/k7EaUFXTVUTwKS6Ot6Ui6xEm60ZD4zCAg==
+      integrity: sha512-hvNR0txBlJJAy1eZOeIDshW4dnQaC694COou4eHHaMdIcteCfoCQATD7sYNlXxNxfTc1iIbHUi7A8CAhQe08uA==
   /@types/node/10.12.30:
     resolution:
       integrity: sha512-nsqTN6zUcm9xtdJiM9OvOJ5EF0kOI8f1Zuug27O/rgtxCRJHGqncSWfCMZUP852dCKPsDsYXGvBhxfRjDBkF5Q==
@@ -1468,7 +1468,7 @@ shrinkwrapMinorVersion: 9
 shrinkwrapVersion: 3
 specifiers:
   '@nxcd/tardis': ^2.0.1
-  '@types/mongodb': ^3.1.12
+  '@types/mongodb': ^3.1.22
   '@types/node': ^10.12.0
   standard: ^12.0.1
   typescript: ^3.1.3
