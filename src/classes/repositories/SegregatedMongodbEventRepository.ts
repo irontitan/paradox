@@ -1,9 +1,9 @@
-import { IEntityConstructor } from '../../../dist'
 import { EventRepository } from './EventRepository'
 import { Collection, ObjectId, ClientSession } from 'mongodb'
 import { SegregatedEventEntity } from '../SegregatedEventEntity'
+import { ISegregatedEvent } from '../../interfaces/ISegregatedEvent'
+import { IEntityConstructor } from '../../interfaces/IEntityConstructor'
 import { IPaginatedQueryResult } from '../../interfaces/IPaginatedQueryResult'
-import { ISegregatedEvent } from '../../interfaces/ISegregatedEvent';
 
 interface IHashMap<T> {
   [key: string]: T[]
