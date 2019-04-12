@@ -1,8 +1,7 @@
-import { IEvent, Reducer, ICommitFunction } from '@nxcd/tardis'
 import { IEventEntity } from '../interfaces/IEventEntity'
+import { IEvent, Reducer, ICommitFunction } from '@nxcd/tardis'
 
 export abstract class EventEntity<TEntity> implements IEventEntity {
-  [key: string]: any
   persistedEvents: IEvent<any>[] = []
   pendingEvents: IEvent<any>[] = []
   id: any = null
@@ -21,7 +20,7 @@ export abstract class EventEntity<TEntity> implements IEventEntity {
     const state = this.state
 
     for (const propertyName of Object.keys(state)) {
-      this[propertyName] = state[propertyName]
+      (this as any)[propertyName] = state[propertyName]
     }
   }
 
