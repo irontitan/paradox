@@ -17,7 +17,7 @@
   ],
   "license": "GPL-3.0",
   "dependencies": {
-    "@irontitan/tardis": "^2.0.1",
+    "@irontitan/tardis": "^2.0.3",
     "@types/mongodb": "^3.1.22",
     "@types/node": "^10.12.0"
   },
