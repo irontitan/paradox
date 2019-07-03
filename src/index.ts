@@ -5,4 +5,4 @@ export * from './classes/repositories/EventRepository'
 export { IPaginatedQueryResult } from './interfaces/IPaginatedQueryResult'
 export { MongodbEventRepository } from './classes/repositories/MongodbEventRepository'
 
-export { Event, Reducer, IEvent, ICommitFunction } from '@nxcd/tardis'
+export { Event, Reducer, IEvent, ICommitFunction } from '@irontitan/tardis'

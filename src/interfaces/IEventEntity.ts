@@ -1,4 +1,4 @@
-import { IEvent } from '@nxcd/tardis'
+import { IEvent } from '@irontitan/tardis'
 
 export interface IEventEntity {
   id: any

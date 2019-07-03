@@ -1,4 +1,4 @@
-import { IEvent } from '@nxcd/tardis'
+import { IEvent } from '@irontitan/tardis'
 import { EventRepository } from './EventRepository'
 import { IEventEntity } from '../../interfaces/IEventEntity'
 import { Collection, ObjectId, ClientSession } from 'mongodb'

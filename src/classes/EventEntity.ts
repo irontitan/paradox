@@ -1,5 +1,5 @@
 import { IEventEntity } from '../interfaces/IEventEntity'
-import { IEvent, Reducer, ICommitFunction } from '@nxcd/tardis'
+import { IEvent, Reducer, ICommitFunction } from '@irontitan/tardis'
 
 export abstract class EventEntity<TEntity> implements IEventEntity {
   persistedEvents: IEvent<any>[] = []

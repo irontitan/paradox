@@ -34,15 +34,15 @@
 ## Instalation
 
 ```shell
-$ pnpm i @nxcd/paradox
+$ pnpm i @irontitan/paradox
 ```
 
 ```shell
-$ npm i @nxcd/paradox
+$ npm i @irontitan/paradox
 ```
 
 ```shell
-$ yarn add @nxcd/paradox
+$ yarn add @irontitan/paradox
 ```
 
 ## Example
@@ -52,7 +52,7 @@ $ yarn add @nxcd/paradox
 Event that will create the `Person` class
 
 ```ts
-import { Event } from '@nxcd/paradox'
+import { Event } from '@irontitan/paradox'
 import { Person } from './classes/Person'
 import ObjectId from 'bson-objectid'
 
@@ -88,7 +88,7 @@ class PersonWasCreated extends Event<IPersonCreationParams> {
 Triggered when a Person's email changes
 
 ```ts
-import { Event } from '@nxcd/paradox'
+import { Event } from '@irontitan/paradox'
 import { Person } from './classes/Person'
 import ObjectId from 'bson-objectid'
 
@@ -127,7 +127,7 @@ The main `Person` entity.
 
 ```ts
 import ObjectId from 'bson-objectid'
-import { EventEntity } from '@nxcd/paradox'
+import { EventEntity } from '@irontitan/paradox'
 import { PersonWasCreated } from './events/PersonWasCreated'
 import { PersonEmailChanged } from './events/PersonEmailChanged'
 
@@ -175,7 +175,7 @@ export class Person extends EventEntity<Person> {
 
 ```ts
 import { Db, MongoClient } from 'mongodb'
-import { MongodbEventRepository } from '@nxcd/paradox'
+import { MongodbEventRepository } from '@irontitan/paradox'
 import { Person } from './classes/Person'
 
 class PersonRepository extends MongodbEventRepository<Person> {
