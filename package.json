@@ -1,8 +1,8 @@
 {
-  "name": "@nxcd/paradox",
+  "name": "@irontitan/paradox",
   "version": "2.11.4",
   "description": "",
-  "repository": "github:nxcd/paradox",
+  "repository": "github:irontitan/paradox",
   "main": "dist/index.js",
   "scripts": {
     "prepublish": "npm run build:clean",
@@ -17,7 +17,7 @@
   ],
   "license": "GPL-3.0",
   "dependencies": {
-    "@nxcd/tardis": "^2.0.1",
+    "@irontitan/tardis": "^2.0.1",
     "@types/mongodb": "^3.1.22",
     "@types/node": "^10.12.0"
   },
