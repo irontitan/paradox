@@ -6,11 +6,11 @@
 
 > Toolkit to help developers implement the [event sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) architecture
 
-[![Build Status](https://travis-ci.org/nxcd/paradox.svg?branch=master)](https://travis-ci.org/nxcd/paradox)
-[![GitHub license](https://img.shields.io/github/license/nxcd/paradox.svg)](https://github.com/nxcd/paradox/blob/master/LICENSE)
-[![Javascript code Style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) [![Github All Releases](https://img.shields.io/github/downloads/nxcd/paradox/total.svg)](https://github.com/nxcd/paradox)
-[![GitHub package version](https://img.shields.io/github/package-json/v/nxcd/paradox.svg)](https://github.com/nxcd/paradox) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0aa3e759b33b4fb6a11dae3e6ae6aca2)](https://app.codacy.com/app/khaosdoctor/paradox?utm_source=github.com&utm_medium=referral&utm_content=nxcd/paradox&utm_campaign=Badge_Grade_Dashboard)
-[![Known Vulnerabilities](https://snyk.io/test/github/nxcd/paradox/badge.svg?targetFile=package.json)](https://snyk.io/test/github/nxcd/paradox?targetFile=package.json)
+[![Build Status](https://travis-ci.org/irontitan/paradox.svg?branch=master)](https://travis-ci.org/nxcd/paradox)
+[![GitHub license](https://img.shields.io/github/license/irontitan/paradox.svg)](https://github.com/nxcd/paradox/blob/master/LICENSE)
+[![Javascript code Style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com) [![Github All Releases](https://img.shields.io/github/downloads/irontitan/paradox/total.svg)](https://github.com/nxcd/paradox)
+[![GitHub package version](https://img.shields.io/github/package-json/v/irontitan/paradox.svg)](https://github.com/nxcd/paradox) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0aa3e759b33b4fb6a11dae3e6ae6aca2)](https://app.codacy.com/app/khaosdoctor/paradox?utm_source=github.com&utm_medium=referral&utm_content=nxcd/paradox&utm_campaign=Badge_Grade_Dashboard)
+[![Known Vulnerabilities](https://snyk.io/test/github/irontitan/paradox/badge.svg?targetFile=package.json)](https://snyk.io/test/github/nxcd/paradox?targetFile=package.json)
 
 ## Summary
 
@@ -216,7 +216,7 @@ class PersonRepository extends MongodbEventRepository<Person> {
 - `EventEntity`: Pre-made event-based class. It contains all the implementations to create a fully functional event sourcing entity
 - `MongoDBEventRepository`: MongoDB event-based repository (If you use another database, feel free to help us by writing a PR and adding it to the list :D)
 - Typing helpers
-- A bare export of the [Tardis](https://github.com/nxcd/tardis) toolkit
+- A bare export of the [Tardis](https://github.com/irontitan/tardis) toolkit
 
 ### API Summary
 
@@ -228,7 +228,7 @@ class PersonRepository extends MongodbEventRepository<Person> {
 
 - *public* `persistedEvents`: Array of events that were persisted to the database
 - *public* `pendingEvents`: Array of events that have not yet been persisted to the database
-- *protected* `reducer`: A reducer instance as described in the [Tardis](https://github.com/nxcd/tardis) documentation
+- *protected* `reducer`: A reducer instance as described in the [Tardis](https://github.com/irontitan/tardis) documentation
 - *get* `state`: Returns the final state of the entity (**must** be implemented)
 
 **Methods:**
@@ -263,7 +263,7 @@ An `EventEntity` is a business class which posesses the implementation of all ev
 
 When created, the new entity will receive (as a parameter) an object, of which the keys must be the name of an event and its value must be the `commit` function, which can be located anywhere, but, in our little example above, we created it as a static method inside the event entity itself. Since v2.9.0, it also receives the entity class itself, to be used for internal purposes.
 
-This procedure is the same for all the events that entity might have, this is due to the fact that the `EventEntity`, when instantiated, will create a [Reducer](http://github.com/nxcd/tardis#reducer) instance in the property `this.reducer` and it'll pass on all these known events to it so it can be possible to manage all events inside the same class, without the need to instantiate something new.
+This procedure is the same for all the events that entity might have, this is due to the fact that the `EventEntity`, when instantiated, will create a [Reducer](http://github.com/irontitan/tardis#reducer) instance in the property `this.reducer` and it'll pass on all these known events to it so it can be possible to manage all events inside the same class, without the need to instantiate something new.
 
 This class **must** also have a getter caled `state`. This getter exists in the parent class (`EventEntity`) as a "Non implemented method", which will throw an error if used as default. This way, it becomes necessary for the child class to overwrite the parent class' method, implementing in it the responsability to reduce the previous state to the current state and returning it.
 
